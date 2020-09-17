@@ -1,0 +1,12 @@
+Структура папок тома System
+Серийный номер тома: C80C-4AE0
+C:.
+│   base_struct.sql
+│   install.txt
+│   start_server.bat
+│   test_server.py
+│   tree.txt
+│   
+└───templates
+        base_edit.html
+        

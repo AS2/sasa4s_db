@@ -1,0 +1,40 @@
+<html>
+	<head>
+		<style type="text/css">
+			#header { 
+   				width: 99%;
+   				height: 80px;
+    			background: #a22;
+    			border: solid 1px black; 
+    			padding: 10px;
+   			}
+		</style>
+	</head>
+
+	<header>
+		<div id="header">
+			<h1>(DEBUG) DB CONSTRUCTOR</h1>
+		</div>
+	</header>
+
+	<body>
+		<a href="index.html">На главную</a>
+		<!-- <h1> Sasach Best </h1>
+		<img src = "https://24smi.org/public/media/celebrity/2020/03/17/ndyuq11dpxep-rikardo-milos.jpg"> -->
+
+		{% if message %}
+			<p>{{ message }}</p>
+		{% endif %}
+
+		<form action="" method="post">
+		<p>
+		    <label for="query">Напиши свой SQL запрос сюда и я его выполню</label>
+	    	<input type="text" name="query">
+		</p>
+		
+		<p>
+		    <input type="submit">
+		</p>
+	    </form>
+	</body>
+</html>
