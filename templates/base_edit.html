@@ -4,9 +4,32 @@
 			#header { 
    				width: 99%;
    				height: 80px;
-    			background: #a22;
+    			background: #a33;
     			border: solid 1px black; 
     			padding: 10px;
+   			}
+
+   			#blog {
+   				margin:0 auto;
+   				padding: 10px 10px 10px 10px;
+   				width: 1000px;
+   				margin-top: 10px;
+   				background-color: #b44;
+   			}
+
+   			#callback {
+   				color: #000;
+   				float: right;
+   				background-color: #c55;
+   				text-decoration: none;
+   				padding: 10px;
+   				border-radius: 10px;
+   				border: 1px black solid;
+   				margin-top: -65px;
+   			}
+
+   			#callback:hover {
+   				background-color: #d66;
    			}
 		</style>
 	</head>
@@ -18,23 +41,26 @@
 	</header>
 
 	<body>
-		<a href="index.html">На главную</a>
-		<!-- <h1> Sasach Best </h1>
-		<img src = "https://24smi.org/public/media/celebrity/2020/03/17/ndyuq11dpxep-rikardo-milos.jpg"> -->
+		<div id="blog">
+			<h1>Работа с базами данных</h1>
+			<a href="index.html" id="callback">На главную</a>
+			<!-- <h1> Sasach Best </h1>
+			<img src = "https://24smi.org/public/media/celebrity/2020/03/17/ndyuq11dpxep-rikardo-milos.jpg"> -->
 
-		{% if message %}
-			<p>{{ message }}</p>
-		{% endif %}
+			{% if message %}
+				<p>{{ message }}</p>
+			{% endif %}
 
-		<form action="" method="post">
-		<p>
-		    <label for="query">Напиши свой SQL запрос сюда и я его выполню</label>
-	    	<input type="text" name="query">
-		</p>
-		
-		<p>
-		    <input type="submit">
-		</p>
-	    </form>
+			<form action="" method="post">
+			<p>
+			    <label for="query">Напиши свой SQL запрос сюда и я его выполню</label>
+	    		<input type="text" name="query">
+			</p>
+			
+			<p>
+			    <input type="submit">
+			</p>
+	    	</form>
+		</div>
 	</body>
 </html>

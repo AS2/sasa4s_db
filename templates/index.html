@@ -11,12 +11,21 @@
 
    			#table { 	
     			margin-top: 15px;
+    			background-color: #fff;
    			}
 
    			a {
    				padding: 15px;
    				text-decoration: none;
    				color: #000;
+   			}
+
+   			#blog {
+   				margin:0 auto;
+   				padding: 10px 10px 10px 10px;
+   				width: 1000px;
+   				margin-top: 10px;
+   				background-color: rgb(253, 234, 168);
    			}
   		</style>
 	</head>
@@ -28,21 +37,26 @@
 	</header>
 
 	<body>
-		<table id="table" border="1px" align="center">
-			<tr>
-				<td>
-				 	<h3><a href="purchase.html">Купить / вернуть билеты</a></h3>
-				</td>
-				<td>
-					<h3><a href="search.html">Поиск театра по постановке</a></h3>
-				</td>
-				<td>
-					<h3><a href="base_edit.html">(Debug) Редактировать структуры</a></h3>
-				</td>
-				<td>
-					<h3><a href="stats.html">Отчеты</a></h3>
-				</td>
-			</tr>
-		</table>
+		<div id="blog">
+			<h1>Лучший сервис по продаже билетов. наверно.</h1>
+			<table id="table" border="1px" align="center">
+				<tr>
+					<td>
+			 			<h3><a href="purchase.html">Купить / вернуть билеты</a></h3>
+					</td>
+					<td>
+						<h3><a href="search.html">Поиск театра по постановке</a></h3>
+					</td>
+				</tr>
+				<tr>
+					<td>
+						<h3><a href="base_edit.html">(Debug) Редактировать структуры</a></h3>
+					</td>
+					<td>
+						<h3><a href="stats.html">Отчеты</a></h3>
+					</td>
+				</tr>
+			</table>
+		</div>
 	</body>
 </html>
