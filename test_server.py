@@ -32,11 +32,16 @@ def search_page():
   	print("show: ", show)
 
   	#conn = sqlite3.connect('database.db')
-    #c = conn.cursor() 
-    #c.execute("SELECT theatreId FROM tickets WHERE showId=1")
+    #cursor = conn.cursor() 
+
+
+    #cursor.execute("""SELECT theatreId FROM showProgramm WHERE showId=1""")
     #conn.commit()
-    #message = "Данные выступления проходят в:"+"\n".join([str(i) for i in c.fetchall()])
-    #c.close()
+
+    #for i in cursor.fetchall()
+      #message = "Данные выступления проходят в:"+"\n".join([str(i) for i in c.fetchall()])
+
+    #cursor.close()
     #conn.close()
 
   if message == '':

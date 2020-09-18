@@ -12,7 +12,7 @@
    			#blog {
    				margin:0 auto;
    				padding: 10px 10px 10px 10px;
-   				width: 1000px;
+   				width: 1100px;
    				margin-top: 10px;
    				background-color: rgb(253, 234, 168);
    			}
@@ -31,6 +31,16 @@
    			#callback:hover {
    				background-color: rgb(224, 204, 138);
    			}
+
+   			#buttons {
+   				float: right;
+   				margin-top: -35px;
+   			}
+
+   			.deleteButton {
+   				width: 20px;
+   				border: 1px black solid;
+   			}
    		</style>
 	</head>
 
@@ -43,27 +53,48 @@
 	<body>
 		<div id="blog">
 			<h1>Покупка/возврат билетов</h1>
-			<h3>Введите в поля представление, город, место, тип билета и количество; если Вы хотите преобрести несколько типов билетов, то нажмите "+"</h3>
+			<h3>Введите в поля представление, город, место, тип билета и количество; если Вы хотите преобрести несколько типов билетов, то нажмите "+", если удалить - "-"</h3>
 			<a href="index.html" id="callback">На главную</a>
 			<form action="" method="post">
-				<p>
-					<input type="text" name="show1" placeholder="Постановка">
-					<input type="text" name="city1" placeholder="Город">
-					<select size="1" name="theatre1">
-						<option>Театр</option>
-						<option id="standartTheater">--Выберете город и постановку--</option>
-					</select>
-					<select size="1" name="ticketType1">
-						<option>Тип билетов</option>
-						<option id="standartTicket">--Выберете город и постановку--</option>
-					</select>
-					<input type="text" name="club" placeholder="Кол-во">
-				</p>
-				<p>
-					<button id="add">+</button>
-					<input type="submit" value="Отправить">
-				</p>
+				<div id="fields">
+					<p id="field1">
+						<input type="text" name="show1" placeholder="Постановка">
+						<input type="text" name="city1" placeholder="Город">
+						<select size="1" name="theatre1">
+							<option>Театр</option>
+							<option id="standartTheater1">--Выберете город и постановку--</option>
+						</select>
+						<select size="1" name="ticketType1">
+							<option>Тип билетов</option>
+							<option id="standartTicket1">--Выберете город и постановку--</option>
+						</select>
+						<input type="text" name="count" placeholder="Кол-во">
+					</p>
+				</div>
+				<input type="submit" value="Отправить">
 			</form>
+
+			<div id="buttons">
+				<button id="add">+</button>
+				<button id="delBut">-</button>
+
+				<script>
+   					var currentFieldsCount = 1;
+		   			
+	   			 	add.onclick = function() {
+   			 			currentFieldsCount += 1;
+	   					document.getElementById("fields").innerHTML += "<p id=\"field"+currentFieldsCount+"\"><input type=\"text\" name=\"show" + currentFieldsCount + "\" placeholder=\"Постановка\"><input type=\"text\" name=\"city"+ currentFieldsCount +"\" placeholder=\"Город\"><select size=\"1\" name=\"theatre"+currentFieldsCount+"\"><option>Театр</option><option id=\"standartTheater"+currentFieldsCount+"\">--Выберете город и постановку--</option></select><select size=\"1\" name=\"ticketType"+currentFieldsCount+"\"><option>Тип билетов</option><option id=\"standartTicket"+currentFieldsCount+"\">--Выберете город и постановку--</option></select><input type=\"text\" name=\"count\" placeholder=\"Кол-во\"></p>";
+   					};
+
+   					delBut.onclick = function() {
+   						if (currentFieldsCount > 1) {
+	   						document.getElementById("field"+ currentFieldsCount).innerHTML = "";
+	   						document.getElementById("field"+ currentFieldsCount).remove();
+	   						currentFieldsCount -= 1;
+	   					}
+   					};
+	   			</script>
+   			</div>
 		</div>
 	</body>
 </html>
