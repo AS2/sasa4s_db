@@ -25,24 +25,32 @@ def purchase_page():
 def search_page():
   message = ''
   if request.method == 'POST':
-  	city = request.form.get('city')
-  	show = request.form.get('show')
+    city = request.form.get('city')
+    show = request.form.get('show')
 
-  	print("city: ", city)
-  	print("show: ", show)
+    print("city: ", city)
+    print("show: ", show)
 
-  	#conn = sqlite3.connect('database.db')
-    #cursor = conn.cursor() 
+    conn = sqlite3.connect('database.db')
+    cursor = conn.cursor() 
 
+    cursor.execute(("SELECT * FROM theaters WHERE TheaterID IN" + 
+    "(SELECT tId FROM showProgramm WHERE tId IN (SELECT TheaterID from theaters WHERE address = '%s')" + 
+    "AND sId IN (SELECT ShowID from show WHERE title = '%s'))") % (city, show))
+    
+    conn.commit()
 
-    #cursor.execute("""SELECT theatreId FROM showProgramm WHERE showId=1""")
-    #conn.commit()
+    notEmpty = 1
+    for i in cursor.fetchall():
+      if notEmpty == 1:
+        notEmpty = 0
+        message = "Данные выступления проходят в:"
+      else:
+        message += ", "
+      message += str(i[1])
 
-    #for i in cursor.fetchall()
-      #message = "Данные выступления проходят в:"+"\n".join([str(i) for i in c.fetchall()])
-
-    #cursor.close()
-    #conn.close()
+    cursor.close()
+    conn.close()
 
   if message == '':
     message = "К сожалению, в Вашем городе в скором времени нет данной постановки..."

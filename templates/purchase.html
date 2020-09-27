@@ -1,47 +1,7 @@
 <html>
 	<head>
-		<style type="text/css">
-   			#header { 
-   				width: 99%;
-   				height: 80px;
-    			background: #fc0;
-    			border: solid 1px black; 
-    			padding: 10px;
-   			}
-
-   			#blog {
-   				margin:0 auto;
-   				padding: 10px 10px 10px 10px;
-   				width: 1100px;
-   				margin-top: 10px;
-   				background-color: rgb(253, 234, 168);
-   			}
-
-   			#callback {
-   				color: #000;
-   				float: right;
-   				background-color: rgb(239, 219, 153);
-   				text-decoration: none;
-   				padding: 10px;
-   				border-radius: 10px;
-   				border: 1px black solid;
-   				margin-top: -125px;
-   			}
-
-   			#callback:hover {
-   				background-color: rgb(224, 204, 138);
-   			}
-
-   			#buttons {
-   				float: right;
-   				margin-top: -35px;
-   			}
-
-   			.deleteButton {
-   				width: 20px;
-   				border: 1px black solid;
-   			}
-   		</style>
+		<link rel="stylesheet" type="text/css" href="../static/design.css">
+		<script src="../static/scripts.js"></script>
 	</head>
 
 	<header>
@@ -52,26 +12,27 @@
 
 	<body>
 		<div id="blog">
+
 			<h1>Покупка/возврат билетов</h1>
-			<h3>Введите в поля представление, город, место, тип билета и количество; если Вы хотите преобрести несколько типов билетов, то нажмите "+", если удалить - "-"</h3>
 			<a href="index.html" id="callback">На главную</a>
-			<form action="" method="post">
-				<div id="fields">
-					<p id="field1">
-						<input type="text" name="show1" placeholder="Постановка">
-						<input type="text" name="city1" placeholder="Город">
-						<select size="1" name="theatre1">
-							<option>Театр</option>
-							<option id="standartTheater1">--Выберете город и постановку--</option>
-						</select>
-						<select size="1" name="ticketType1">
-							<option>Тип билетов</option>
-							<option id="standartTicket1">--Выберете город и постановку--</option>
-						</select>
-						<input type="text" name="count" placeholder="Кол-во">
-					</p>
+			<div id="1step">
+				<h2>1 шаг</h2>
+				<h3>Укажите имя и фамилию заказчика</h3>
+				<div id="client">
+					<p><input type="text" name="firstname" placeholder="Имя">
+					<input type="text" name="secondname" placeholder="Фамилия"></p>
+					<button id="to2step">Далее</button>
 				</div>
-				<input type="submit" value="Отправить">
+			</div>
+			<div id="2step">
+
+			</div>
+
+			<!--<p id="field1">
+				<input type="text" name="show1" placeholder="Постановка">
+				<input type="text" name="city1" placeholder="Город">
+			</p>
+			<input type="submit" value="Отправить">
 			</form>
 
 			<div id="buttons">
@@ -92,8 +53,8 @@
 	   						document.getElementById("field"+ currentFieldsCount).remove();
 	   						currentFieldsCount -= 1;
 	   					}
-   					};
-	   			</script>
+   					}; 
+	   			</script>-->
    			</div>
 		</div>
 	</body>
