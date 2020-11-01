@@ -238,7 +238,8 @@ window.onload = function() {
 			outputQuadYearDiv = document.getElementById('sellsForQuadYear_res');
 
 		var currentYear = String(date.getFullYear()), currentMonth = String(date.getMonth()+1);
-		var yearBegin = currentYear + "-1-1", yearEnd = currentYear+"-12-31", quadBegin, quadEnd;
+		var yearBegin = currentYear + "-1-1", yearEnd = currentYear+"-12-31", quadBegin, quadEnd, totalYear = 0, totalQuad = 0;
+
 
 		if (Number(currentMonth) >= 1 && Number(currentMonth) <= 3)
 			quadBegin = currentYear + "-1-1", quadEnd = currentYear + "-3-31";
@@ -262,14 +263,21 @@ window.onload = function() {
 		var sellsPerTheater = GetSellsPerTheaterOnSomeTime(yearBegin, yearEnd, theatersIds);
 		outputAllYearDiv.innerHTML += "<h3>Продажи по каждому театру ЗА ГОД</h3>"
 
-		for (i = 0; i < sellsPerTheater.length; i++)
+		for (i = 0; i < sellsPerTheater.length; i++) {
 			outputAllYearDiv.innerHTML += "<p>Театр \"" + theatersNames[i] + "\", сборы: " + sellsPerTheater[i] + "</p>";
+			totalYear += sellsPerTheater[i];
+		}
+		outputAllYearDiv.innerHTML += "<p>ИТОГО: " + totalYear + "</p>";
+
 
 		sellsPerTheater = GetSellsPerTheaterOnSomeTime(quadBegin, quadEnd, theatersIds);
 		outputAllYearDiv.innerHTML += "<h3>Продажи по каждому театру ЗА КВАРТАЛ</h3>"
 
-		for (i = 0; i < sellsPerTheater.length; i++)
+		for (i = 0; i < sellsPerTheater.length; i++) {
 			outputQuadYearDiv.innerHTML += "<p>Театр \"" + theatersNames[i] + "\", сборы: " + sellsPerTheater[i] + "</p>";
+			totalQuad += sellsPerTheater[i];
+		}
+		outputQuadYearDiv.innerHTML += "<p>ИТОГО: " + totalQuad + "</p>";
 	}
 
 	function EmptySells() {

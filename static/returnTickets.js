@@ -261,7 +261,7 @@ window.onload = function() {
 			ticketCost = ticketTable[0][4];
 
 			// прим: мы сохраняем ВСЕ билеты, но выводим для возврата ТОЛЬКО те, чье кол-во больше "0" и которые еще в показе (чтоб соответственно честно сохранить скидку с учетом первой постановки)
-			if (ticketsCnt[i] != 0 || dateToday <= showTable[0][4])
+			if (ticketsCnt[i] != 0 && dateToday <= showTable[0][4])
 				document.getElementById('tickets').innerHTML += "<p>Театр: " + theaterName + ", постановка: \""+ showName +"\" билет \"" + ticketTypeName +
 																"\", куплено:" + ticketsCnt[i] +
 																", цена 1 билета:" + ticketCost +
