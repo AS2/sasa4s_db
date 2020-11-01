@@ -82,7 +82,7 @@ window.onload = function() {
 							ticketsCnt.push(String(-1 * Number(currentPurchaseIdTable[k][3])));
 							// если билеты были возвращены накануне показа, то сохраняем половину их стоимости
 							if (currentPurchaseIdTable[k][4] >= showTable[0][3] && currentPurchaseIdTable[k][4] <= showTable[0][4])
-								sellsPerTicket[currentTicketId] += currentPurchaseIdTable[i][3] * ticketTable[0][4] * 0.5;
+								sellsPerTicket[currentTicketId] += currentPurchaseIdTable[k][3] * ticketTable[0][4] * 0.5;
 						}
 						// заполняем массивы нужными параметрами
 						ticketsShows.push(showTable[0][1]);
@@ -111,7 +111,7 @@ window.onload = function() {
 							// если билеты были возвращены накануне показа, то сохраняем половину их стоимости
 							if (currentPurchaseIdTable[k][4] >= showTable[0][3] && currentPurchaseIdTable[k][4] <= showTable[0][4]) {
 								ticketTable = JSON.parse(MakeXMLRequest('/getTicketByTicketId/'+ticketsIds[currentTicketId]));
-								sellsPerTicket[currentTicketId] += currentPurchaseIdTable[i][3] * ticketTable[0][4] * 0.5;
+								sellsPerTicket[currentTicketId] += currentPurchaseIdTable[k][3] * ticketTable[0][4] * 0.5;
 							}
 						}	
 					}
@@ -184,9 +184,20 @@ window.onload = function() {
 		var outputDiv = document.getElementById('soldenTickets_res'),
 			theaterAddress = document.getElementById('soldenTickets_city').value,
 			theaterName = document.getElementById('soldenTickets_theater').value,
-			theaterTable = JSON.parse(MakeXMLRequest('/getTheaterByNameAndAddress/' + theaterName + '/' + theaterAddress));
+			theaterTable;
+
+		if (theaterAddress == "" || theaterName == "") {
+			alert("Впишите данные");
+			return;
+		}
+		theaterTable = JSON.parse(MakeXMLRequest('/getTheaterByNameAndAddress/' + theaterName + '/' + theaterAddress));
 		if (theaterTable == "**ERROR**")
 			return;
+
+		if (theaterTable.length == 0) {
+			alert("Данного театра не существует!");
+			return;	
+		}
 
 		var showProgrammTable = JSON.parse(MakeXMLRequest('/getShowProgrammByTheaterID/' + theaterTable[0][0]));
 		if (showProgrammTable == "**ERROR**")
@@ -238,6 +249,9 @@ window.onload = function() {
 		else if (Number(currentMonth) >= 10 && Number(currentMonth) <= 12)
 			quadBegin = currentYear + "-10-1", quadEnd = currentYear + "-12-31";
 
+		outputAllYearDiv.innerHTML = "";
+		outputQuadYearDiv.innerHTML = "";
+
 		var allTheatersTable = JSON.parse(MakeXMLRequest('/getAllTheaters/')), 
 		theatersIds = new Array(), theatersNames = new Array();
 		for (i = 0; i < allTheatersTable.length; i++) {
@@ -281,6 +295,11 @@ window.onload = function() {
 	function BestSells() {
 		var dateBegin = document.getElementById("bestSells_begin").value, dateEnd = document.getElementById("bestSells_end").value,
 			outputDiv = document.getElementById('bestSells_res');
+
+		if (dateBegin == "" || dateEnd == "") {
+			alert("Впишите данные");
+			return;
+		}
 			
 		var ticketsTable = MakeXMLRequest('/getAllTickets/');
 		if (ticketsTable == "**ERROR**")

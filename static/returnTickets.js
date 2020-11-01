@@ -167,13 +167,18 @@ window.onload = function() {
 		surname = document.getElementById('secondname').value;
 		purchaseId = document.getElementById('purchaseId').value;
 
+		if (name == "" || surname == "" || purchaseId == "" || purchaseId <= 0) {
+			alert("Некорректные данные");
+			return;
+		}
+
 		// получаем всю историю заказа из БД
 		purchaseTable = JSON.parse(MakeXMLRequest('/getPurchaseList/'+name+'/'+surname+'/'+purchaseId));
 		if (purchaseTable.length == 0) {
 			alert("Неправильные данные.");
 			return;
 		}
-	
+
 		// создаем поля для вывода ответа сервера и страницы
 		document.getElementById('2step').innerHTML= "<h2>2 шаг</h2>"+
 													"<h3 id=\"step3Head\">Выберете кол-во билетов, которое хоитите вернуть</h3>"+
@@ -182,6 +187,19 @@ window.onload = function() {
 													"</div>" +
 													"<button id=\"endReturn\">Вернуть билеты</button>" +
 													"</div>";
+
+		// чистим поле для ввода
+		document.getElementById('tickets').innerHTML = "";
+
+		// заранее чистим все массивы, если в них было что то записано с прошлого нажатия "Далее"
+		shows = [];
+		ticketsCnt = [];
+		ticketsCosts = [];
+		ticketsIds = [];
+		ticketsShow = [];
+		ticketsStartShow = [];
+		ticketsEndShow = [];
+		oldPartOfCost = 0;
 
 		// проводим перерасчет билетов в заказе
 		var wasThatTicket = 0, currentTicketId;

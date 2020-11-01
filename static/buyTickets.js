@@ -13,7 +13,9 @@ window.onload = function() {
 		ticketsShowTitle = new Array(),
 
 		showsDisconts = new Array(),
-		firstShow = new String();
+		firstShow = new String(), 
+		showsFields = new Array(),
+		citiesFields = new Array();
 
 	let XHR = new XMLHttpRequest();
 
@@ -139,6 +141,20 @@ window.onload = function() {
 			city = document.getElementById('city'+i).value;
 			show = document.getElementById('show'+i).value;
 
+			// проверяем, было ли уже введено такое поле
+			wasShowAndCity = 0;
+			for (j = 0; j < showsFields.length; j++)
+				if (city == citiesFields[j] && show == showsFields[j]) {
+					wasShowAndCity = 1;
+					break;
+				}
+
+			if (wasShowAndCity == 1)
+				continue;
+
+			citiesFields.push(city);
+			showsFields.push(show);
+
 			// если поля города и постановки не пустые
 			if (city != "" && show != "") {
 				// отправляем запрос на получение всех билетов на данную постановку в этом городе
@@ -235,6 +251,12 @@ window.onload = function() {
 
 		name = nameInput.value;
 		surname = surnameInput.value;
+
+		if (name == "" || surname == "") {
+			alert("Некорректные данные");
+			return;
+		}
+
 		document.getElementById('2step').innerHTML= "<h2>2 шаг</h2>"+
 													"<h3>Выберете города и постановки</h3>"+
 													"<div id=\"showsAndCities\">" +
