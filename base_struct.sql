@@ -54,10 +54,10 @@ INSERT INTO theaters(name, address) VALUES("Mariinsky Theatre", "SPb");
 INSERT INTO theaters(name, address) VALUES("MOD Club", "SPb");
 
 
-INSERT INTO show(title, author, dateBegin, dateEnd) VALUES("Skin dog's songs", "Haski", "16.12.2020", "18.12.2020");
-INSERT INTO show(title, author, dateBegin, dateEnd) VALUES("HASHEstvie", "Russkoe Radio", "08.08.2021", "15.08.2021");
-INSERT INTO show(title, author, dateBegin, dateEnd) VALUES("Spartak", "Aram Hachaturyan", "17.01.2021", "21.12.2021");
-INSERT INTO show(title, author, dateBegin, dateEnd) VALUES("Noch' Kino", "a lot", "22.09.2020", "23.09.2020");
+INSERT INTO show(title, author, dateBegin, dateEnd) VALUES("Skin dog's songs", "Haski", "2020-12-16", "2020-12-18");
+INSERT INTO show(title, author, dateBegin, dateEnd) VALUES("HASHEstvie", "Russkoe Radio", "2021-08-08", "2021-08-15");
+INSERT INTO show(title, author, dateBegin, dateEnd) VALUES("Spartak", "Aram Hachaturyan", "2021-01-17", "2021-12-21");
+INSERT INTO show(title, author, dateBegin, dateEnd) VALUES("Noch Kino", "a lot", "2020-09-22", "2020-09-23");
 
 
 INSERT INTO showProgramm(tId, sId) VALUES(1, 1);

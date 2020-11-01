@@ -1,6 +1,7 @@
 <html>
 	<head>
 		<link rel="stylesheet" type="text/css" href="../static/design.css">
+    <script src="../static/stats.js"></script>
 	</head>
 
 	<header>
@@ -13,6 +14,49 @@
 		<div id="blog">
 			<h1>Отчетности</h1>
 			<a href="index.html" id="callback">На главную</a>
+      <div id="allStats">
+        <div id="cityShows">
+          <h3>Репертуар театров города</h3>
+          <h4>Укажите город</h4>
+          <input type="text" placeholder="Город" id="cityShows_city">
+          <button id="cityShows_output">Далее</button>
+          <div id="cityShows_res"></div>
+        </div>
+
+        <div id="soldenTickets">
+          <h3>Текущее состояние по проданным билетам на постановки выбранного театра</h3>
+          <h4>Укажите город</h4>
+          <input type="text" placeholder="Город" id="soldenTickets_city">
+          <input type="text" placeholder="Название" id="soldenTickets_theater">
+          <button id="soldenTickets_output">Далее</button>
+          <div id="soldenTickets_res"></div>
+        </div>
+
+        <div id="sellsForYear">
+          <h3>Финансовый отчет за квартал/год по всем театрам</h3>
+          <button id="sellsForYear_output">Получить отчет</button> 
+          <div id="sellsForYear_res">
+            <div id="sellsForAllYear_res">
+            </div>
+            <div id="sellsForQuadYear_res">
+            </div>
+          </div>
+        </div>
+
+        <div id="emptySells">
+          <h3>Коэффициент "пустых" продаж</h3>
+          <button id="emptySells_output">Рассчитать</button>
+          <div id="emptySells_res"></div>
+        </div>
+
+        <div id="bestSells">
+          <h3>Коэффициент  "успешности" по каждому театру и по каждой постановке за выбранный промежуток времени</h3>
+          <p>Дата начала:<input type="date" placeholder="" id="bestSells_begin">
+          Конечная дата:<input type="date" placeholder="Город" id="bestSells_end"></p>
+          <button id="bestSells_output">Далее</button>
+          <div id="bestSells_res"></div>
+        </div>
+      </div>
 		</div>
 	</body>
 </html>
