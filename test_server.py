@@ -52,6 +52,22 @@ def getClientID(name, surname):
 
     return str(idToReturn), 200
 
+@app.route('/getShowProgrammByShowAndTheater/<show>/<theater>', methods=['post', 'get'])
+def getShowProgrammByShowAndTheater(show, theater):
+  if request.method == 'POST':
+    conn = sqlite3.connect('database.db')
+    cursor = conn.cursor()
+
+    cursor.execute(("SELECT * FROM showProgramm WHERE sId IN (SELECT ShowID FROM show WHERE title='%s') AND tId IN" + 
+      "(SELECT TheaterID FROM theaters WHERE name='%s')") % (show, theater))
+    conn.commit()
+
+    msg = cursor.fetchall();
+
+    cursor.close()
+    conn.close()
+    return json.dumps(msg), 200
+
 @app.route('/getShowByName/<show>', methods=['post'])
 def getShowByName(show):
   if request.method == 'POST':
@@ -86,7 +102,6 @@ def getShowByTicketId(ticketId):
     cursor.close()
     conn.close()
     return json.dumps(showName), 200
-
 
 @app.route('/getNewPurchaseID/<name>/<surname>', methods=['post'])
 def getNewPurchaseID(name, surname):
@@ -178,18 +193,15 @@ def returnCurrentTicketCount(ticketId, totalCount):
     conn.close()
     return str(returnCount), 200
 
-@app.route('/selectTickets/<city>/<show>', methods=['post'])
-def selectTickets(city, show):
+@app.route('/selectTickets/<theater>/<show>/<time>', methods=['post'])
+def selectTickets(theater, show, time):
   if request.method == 'POST':
     conn = sqlite3.connect('database.db')
     cursor = conn.cursor()
 
-    print("city: ", city)
-    print("show: ", show)
-
     cursor.execute(("SELECT * FROM tickets WHERE showProgrammId IN" + 
-    "(SELECT ShowProgrammID FROM showProgramm WHERE tId IN (SELECT TheaterID from theaters WHERE address = '%s')" + 
-    "AND sId IN (SELECT ShowID from show WHERE title = '%s'))") % (city, show))
+    "(SELECT ShowProgrammID FROM showProgramm WHERE tId IN (SELECT TheaterID from theaters WHERE name = '%s')" + 
+    "AND sId IN (SELECT ShowID from show WHERE title = '%s') AND showDate='%s')") % (theater, show, time))
     
     conn.commit()
 
@@ -205,41 +217,39 @@ def buyTickets_page():
   return render_template("buyTickets.html")
 
 # работа с поиском билетов по городу и постановке
-@app.route('/search.html', methods=['post', 'get'])
-def search_page():
-  message = ''
+@app.route('/getAllShows/', methods=['post', 'get'])
+def getAllShows():
   if request.method == 'POST':
-    city = request.form.get('city')
-    show = request.form.get('show')
-
-    print("city: ", city)
-    print("show: ", show)
-
     conn = sqlite3.connect('database.db')
-    cursor = conn.cursor() 
+    cursor = conn.cursor()
 
-    cursor.execute(("SELECT * FROM theaters WHERE TheaterID IN" + 
-    "(SELECT tId FROM showProgramm WHERE tId IN (SELECT TheaterID from theaters WHERE address = '%s')" + 
-    "AND sId IN (SELECT ShowID from show WHERE title = '%s'))") % (city, show))
-    
+    cursor.execute(("SELECT * FROM show"))
     conn.commit()
 
-    notEmpty = 1
-    for i in cursor.fetchall():
-      if notEmpty == 1:
-        notEmpty = 0
-        message = "Данные выступления проходят в:"
-      else:
-        message += ", "
-      message += str(i[1])
+    msg = cursor.fetchall();
 
     cursor.close()
     conn.close()
+    return json.dumps(msg), 200
 
-  if message == '':
-    message = "К сожалению, в Вашем городе в скором времени нет данной постановки..."
-    print("going to print", message)
-  return render_template("search.html", message = message)
+@app.route('/getShowProgrammByShowName/<showName>', methods=['post', 'get'])
+def getShowProgrammByShowName(showName):
+  if request.method == 'POST':
+    conn = sqlite3.connect('database.db')
+    cursor = conn.cursor()
+
+    cursor.execute(("SELECT * FROM showProgramm WHERE sId IN (SELECT ShowID FROM show WHERE title='%s')") % (showName))
+    conn.commit()
+
+    msg = cursor.fetchall();
+
+    cursor.close()
+    conn.close()
+    return json.dumps(msg), 200
+
+@app.route('/search.html', methods=['post', 'get'])
+def search_page():
+  return render_template("search.html")
 
 # работа по выводу статистики
 @app.route('/getAllShowsOfCity/<city>', methods=['post', 'get'])
@@ -417,6 +427,21 @@ def stats_page():
   return render_template("stats.html")
 
 # работа с Возвращением билетов
+@app.route('/getShowProgrammByTicketId/<ticketId>', methods=['post', 'get'])
+def getShowProgrammByTicketId(ticketId):
+  if request.method == 'POST':
+    conn = sqlite3.connect('database.db')
+    cursor = conn.cursor()
+
+    cursor.execute(("SELECT * FROM showProgramm WHERE ShowProgrammID IN (SELECT showProgrammId FROM tickets WHERE TicketID = '%s')") % (ticketId))
+    conn.commit()
+
+    msg = cursor.fetchall();
+
+    cursor.close()
+    conn.close()
+    return json.dumps(msg), 200
+
 @app.route('/getPurchaseList/<name>/<surname>/<purchaseId>', methods=['post', 'get'])
 def getPurchaseList(name, surname, purchaseId):
   if request.method == 'POST':
@@ -517,9 +542,15 @@ if __name__ == "__main__":
     # (по факту её создаём)
     conn = sqlite3.connect('database.db')
     c = conn.cursor()
+
     qry = open("base_struct.sql").read()
     c.executescript(qry)
     conn.commit()
+
+    qry = open("base_filler.sql").read()
+    c.executescript(qry)
+    conn.commit()
+
     c.close()
     conn.close()    
   app.debug = True 

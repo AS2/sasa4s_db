@@ -1,6 +1,7 @@
 <html>
 	<head>
-    <link rel="stylesheet" type="text/css" href="../static/design.css">
+    	<link rel="stylesheet" type="text/css" href="../static/css/design.css">
+    	<script src="../static/js/search.js"></script>
 	</head>
 	<header>
 		<div id="header">
@@ -13,20 +14,16 @@
 
 	<body>
 		<div id="blog">
-			<h1>Поиск билетов в вашем городе.</h1>
+			<h1>Поиск постановок с датой</h1>
 			<a href="index.html" id="callback">На главную</a>
-			<form action="" method="post">
-				<p>
-	    			<input type="text" name="city" placeholder="Город">
-	    			<input type="text" name="show" placeholder="Постановка">
-	    			<input type="submit">
-				</p>
-				<div id="result">
-					{% if message %}
-						<p>{{ message }}</p>
-					{% endif %}
-				</div>
-			</form>
+			<p>
+	    		<input list="search_list" id="search_show" type="text" name="show" placeholder="Постановка" autocomplete="off">
+	    		<datalist id="search_list">
+	    		</datalist>
+	    		<button id="search_submit">Найти</button>
+	    		<div id="search_result">
+	    		</div>
+			</p>
 		</div>
 	</body>
 </html>

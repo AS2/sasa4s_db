@@ -5,7 +5,69 @@ window.onload = function() {
 		buttonEmptySells = document.getElementById('emptySells_output'),
 		buttonBestSells = document.getElementById('bestSells_output');
 
-	var date = new Date(), dateToday = String(date.getFullYear()+"-"+(date.getMonth()+1)+"-"+date.getDate());
+	function CorrectDate(dateStr) {
+		dateStr += "-00-00";
+		return dateStr;
+	}
+
+	function returnTodayDateInStr () {
+		var date = new Date(), dateToday = date.getFullYear()+"-";
+		if ((date.getMonth()+1) < 10)
+			dateToday += "0";
+		dateToday += (date.getMonth()+1) + "-";
+		if (date.getDate() < 10)
+			dateToday += "0";
+		dateToday += date.getDate() + "-";
+		if (date.getHours() < 10)
+			dateToday += "0";
+		dateToday += date.getHours() + "-";
+		if (date.getMinutes() < 10)
+			dateToday += "0";
+		dateToday += date.getMinutes();
+
+		return dateToday;
+	}
+
+	function returnDateInReadableStr (dayStr) {
+		var outputStr = dayStr[8] + dayStr[9] + "/" + dayStr[5] + dayStr[6] + "/" + 
+			dayStr[0] + dayStr[1] + dayStr[2] + dayStr[3] + " в " + 
+			dayStr[11] + dayStr[12] + ":" + dayStr[14] + dayStr[15];
+
+		return outputStr;
+	}
+
+	function returnYesterDayFromDateStr (dayStr) {
+		var date = new Date(), outputStr;
+		var year = 0, month = 0, day = 0, hour = 0, minute = 0;
+		var pos = 0;
+
+		for (pos = 0; pos <= 3; pos++)
+			year = year * 10 + Number(dayStr[pos]);
+		for (pos = 5; pos <= 6; pos++)
+			month = month * 10 + Number(dayStr[pos]);
+		for (pos = 8; pos <= 9; pos++)
+			day = day * 10 + Number(dayStr[pos]);
+		for (pos = 11; pos <= 12; pos++)
+			hour = hour * 10 + Number(dayStr[pos]);
+		for (pos = 14; pos <= 15; pos++)
+			minute = minute * 10 + Number(dayStr[pos]);
+
+		var date = new Date(year, month - 1, day - 1, hour, minute), outputStr = date.getFullYear()+"-";
+		if ((date.getMonth()+1) < 10)
+			outputStr += "0";
+		outputStr += (date.getMonth()+1) + "-";
+		if (date.getDate() < 10)
+			outputStr += "0";
+		outputStr += date.getDate() + "-";
+		if (date.getHours() < 10)
+			outputStr += "0";
+		outputStr += date.getHours() + "-";
+		if (date.getMinutes() < 10)
+			outputStr += "0";
+		outputStr += date.getMinutes();
+
+		return outputStr;
+	}
 
 	function MakeXMLRequest(str) {
 		let XHR = new XMLHttpRequest();
@@ -49,15 +111,15 @@ window.onload = function() {
 
 				// создаем массивы с информацией о билетах
 				var ticketsIds = new Array(),
-					ticketsShows = new Array(),
-					ticketsCnt = new Array(),
-					ticketsCosts = new Array(),
 					sellsPerTicket = new Array(),
+					ticketsCnt = new Array(),
+					ticketsShowProgramms = new Array(),
+					ticketsCosts = new Array(),
 					ticketsDiscounts = new Array(),
 
-					shows = new Array(),
-					ticketsPerShow = new Array(),
-					firstShow = "**-1**2**", currentTicketId;
+					showProgramms = new Array(),
+					ticketsPerShowProgramm = new Array(),
+					firstShowProgramm = -1, currentTicketId;
 				// обходим наш лист и собираем информацию о билетах
 				for (k = 0; k < currentPurchaseIdTable.length; k++) {
 					// проверяем наличие билета в массиве
@@ -71,7 +133,7 @@ window.onload = function() {
 
 					// если не было билета в массиве, то инициализируем его
 					if (wasTicket == 0) {
-						showTable = JSON.parse(MakeXMLRequest('/getShowByTicketId/'+currentPurchaseIdTable[k][2]));
+						showProgrammTable = JSON.parse(MakeXMLRequest('/getShowProgrammByTicketId/'+currentPurchaseIdTable[k][2]));
 						ticketTable = JSON.parse(MakeXMLRequest('/getTicketByTicketId/'+currentPurchaseIdTable[k][2]));
 
 						ticketsIds.push(currentPurchaseIdTable[k][2]);
@@ -81,24 +143,25 @@ window.onload = function() {
 						else {
 							ticketsCnt.push(String(-1 * Number(currentPurchaseIdTable[k][3])));
 							// если билеты были возвращены накануне показа, то сохраняем половину их стоимости
-							if (currentPurchaseIdTable[k][4] >= showTable[0][3] && currentPurchaseIdTable[k][4] <= showTable[0][4])
-								sellsPerTicket[currentTicketId] += currentPurchaseIdTable[k][3] * ticketTable[0][4] * 0.5;
+							yesterdayDate = returnYesterDayFromDateStr(showProgrammTable[0][3]);
+							if (currentPurchaseIdTable[k][4] >= returnYesterDayFromDateStr(showProgrammTable[0][3]) && currentPurchaseIdTable[k][4] <= showProgrammTable[0][3])
+								sellsPerTicket[currentTicketId] += currentPurchaseIdTable[k][3] * ticketTable[0][3] * 0.5;
 						}
 						// заполняем массивы нужными параметрами
-						ticketsShows.push(showTable[0][1]);
-						ticketsCosts.push(ticketTable[0][4]);
+						ticketsShowProgramms.push(showProgrammTable[0][0]);
+						ticketsCosts.push(ticketTable[0][3]);
 						ticketsDiscounts.push(0);
 
 						// добавляем шоу, если его не было
-						wasShow = 0;
-						for (l = 0; l < shows.length; l++)
-							if (showTable[0][1] == shows[l]) {
-								wasShow = 1;
+						wasShowProgramms = 0;
+						for (l = 0; l < showProgramms.length; l++)
+							if (showProgrammTable[0][0] == showProgramms[l]) {
+								wasShowProgramms = 1;
 								break;
 							}
-						if (wasShow == 0) {
-							shows.push(showTable[0][1]);
-							ticketsPerShow.push(0);
+						if (wasShowProgramms == 0) {
+							showProgramms.push(showProgrammTable[0][1]);
+							ticketsPerShowProgramm.push(0);
 						}
 					}
 					// если был билет в списке
@@ -107,11 +170,12 @@ window.onload = function() {
 							ticketsCnt[currentTicketId] += currentPurchaseIdTable[k][3];
 						else {
 							ticketsCnt[currentTicketId] -= currentPurchaseIdTable[k][3];
-							showTable = JSON.parse(MakeXMLRequest('/getShowByTicketId/'+ticketsIds[currentTicketId]));
+							showProgrammTable = JSON.parse(MakeXMLRequest('/getShowProgrammByTicketId/'+ticketsIds[currentTicketId]));
 							// если билеты были возвращены накануне показа, то сохраняем половину их стоимости
-							if (currentPurchaseIdTable[k][4] >= showTable[0][3] && currentPurchaseIdTable[k][4] <= showTable[0][4]) {
+							yesterdayDate = returnYesterDayFromDateStr(showProgrammTable[0][3]);
+							if (currentPurchaseIdTable[k][4] >= returnYesterDayFromDateStr(showProgrammTable[0][3]) && currentPurchaseIdTable[k][4] <= showProgrammTable[0][3]) {
 								ticketTable = JSON.parse(MakeXMLRequest('/getTicketByTicketId/'+ticketsIds[currentTicketId]));
-								sellsPerTicket[currentTicketId] += currentPurchaseIdTable[k][3] * ticketTable[0][4] * 0.5;
+								sellsPerTicket[currentTicketId] += currentPurchaseIdTable[k][3] * ticketTable[0][3] * 0.5;
 							}
 						}	
 					}
@@ -119,23 +183,23 @@ window.onload = function() {
 
 				// ищем первую постановку и кол-во билетов на каждую постановку
 				for (k = 0; k < ticketsIds.length; k++) {
-					if (ticketsCnt[k] != 0 && firstShow == "**-1**2**")
-						firstShow = ticketsShows[k];
-					for (l = 0; l < shows.length; l++)
-						if (ticketsShows[k] == shows[l]) {
-							ticketsPerShow[l] += ticketsCnt[k];
+					if (ticketsCnt[k] != 0 && firstShowProgramm == -1)
+						firstShowProgramm = ticketsShowProgramms[k];
+					for (l = 0; l < showProgramms.length; l++)
+						if (ticketsShowProgramms[k] == showProgramms[l]) {
+							ticketsPerShowProgramm[l] += ticketsCnt[k];
 							break;
 						}
 				}
 			
 				// расчитывем стоимость с каждого типа билета с учетом скидок
 				for (k = 0; k < ticketsIds.length; k++) {
-					if (ticketsShows[k] != firstShow)
+					if (ticketsShowProgramms[k] != firstShowProgramm)
 						ticketsDiscounts[k] += 10;
 
-					for (l = 0; l < shows.length; l++)
-						if (ticketsShows[k] == shows[l]) {
-							if (ticketsPerShow[l] > 10)
+					for (l = 0; l < showProgramms.length; l++)
+						if (ticketsShowProgramms[k] == showProgramms[l]) {
+							if (ticketsPerShowProgramm[l] > 10)
 								ticketsDiscounts[k] += 10;
 							break;
 						}
@@ -157,6 +221,9 @@ window.onload = function() {
 
 	function CityShows() {
 		var city = document.getElementById('cityShows_city').value;
+		var shows = new Array();
+		var theaters = new Array();
+		var dateToday = returnTodayDateInStr();
 
 		if (city == '') {
 			alert('Впишите город');
@@ -175,8 +242,24 @@ window.onload = function() {
 			theaterTable = JSON.parse(MakeXMLRequest('/getTheaterByShowProgrammId/' + allShowsTable[i][0]));
 			showTable = JSON.parse(MakeXMLRequest('/getShowByShowProgrammId/' + allShowsTable[i][0]));
 
-			if (dateToday < showTable[0][4])
-				outputDiv.innerHTML += "<p>Постановка: \"" + showTable[0][1] + "\", театр: \"" + theaterTable[0][1] + "\"</p>";
+			if (dateToday <= allShowsTable[i][3]) {
+				wasShow = 0;
+				for (j = 0; j < shows.length; j++) {
+					if (shows[j] == showTable[0][1] && theaters[j] == theaterTable[0][1]) {
+						wasShow = 1;
+						break;
+					}
+				}
+				if (wasShow == 0) {
+					outputDiv.innerHTML += "<p>Постановка: \"" + showTable[0][1] + "\", театр: \"" + theaterTable[0][1] + "\"</p>";
+					shows.push(showTable[0][1]);
+					theaters.push(theaterTable[0][1]);
+				}
+			}
+		}
+		if (outputDiv.innerHTML == " ") {
+			alert('В данном городе нет выступлений');
+			return;	
 		}
 	}
 
@@ -228,7 +311,7 @@ window.onload = function() {
 				}
 			}
 
-			outputDiv.innerHTML += "<p>Постановка: \"" + currentShow[0][1] + "\"; Продано " + (ticketsSold - ticketsReturned) + 
+			outputDiv.innerHTML += "<p>Постановка: \"" + currentShow[0][1] + "\"; Время: " + returnDateInReadableStr(showProgrammTable[i][3]) + " Продано " + (ticketsSold - ticketsReturned) + 
 								   " из " + totalTickets + "</p>";
 		}
 	}
@@ -237,18 +320,19 @@ window.onload = function() {
 		var outputAllYearDiv = document.getElementById('sellsForAllYear_res'),
 			outputQuadYearDiv = document.getElementById('sellsForQuadYear_res');
 
+		var date = new Date();
 		var currentYear = String(date.getFullYear()), currentMonth = String(date.getMonth()+1);
-		var yearBegin = currentYear + "-1-1", yearEnd = currentYear+"-12-31", quadBegin, quadEnd, totalYear = 0, totalQuad = 0;
+		var yearBegin = currentYear + "-01-01-00-00", yearEnd = currentYear+"-12-31-23-59", quadBegin, quadEnd, totalYear = 0, totalQuad = 0;
 
 
 		if (Number(currentMonth) >= 1 && Number(currentMonth) <= 3)
-			quadBegin = currentYear + "-1-1", quadEnd = currentYear + "-3-31";
+			quadBegin = currentYear + "-01-01-00-00", quadEnd = currentYear + "-03-31-23-59";
 		else if (Number(currentMonth) >= 4 && Number(currentMonth) <= 6)
-			quadBegin = currentYear + "-4-1", quadEnd = currentYear + "-6-30";
+			quadBegin = currentYear + "-04-01-00-00", quadEnd = currentYear + "-06-30-23-59";
 		else if (Number(currentMonth) >= 7 && Number(currentMonth) <= 9)
-			quadBegin = currentYear + "-7-1", quadEnd = currentYear + "-9-30";
+			quadBegin = currentYear + "-07-01-00-00", quadEnd = currentYear + "-09-30-23-59";
 		else if (Number(currentMonth) >= 10 && Number(currentMonth) <= 12)
-			quadBegin = currentYear + "-10-1", quadEnd = currentYear + "-12-31";
+			quadBegin = currentYear + "-10-01-00-00", quadEnd = currentYear + "-12-31-23-59";
 
 		outputAllYearDiv.innerHTML = "";
 		outputQuadYearDiv.innerHTML = "";
@@ -308,10 +392,20 @@ window.onload = function() {
 			alert("Впишите данные");
 			return;
 		}
-			
+		
+
+		dateBegin = CorrectDate(dateBegin);
+		dateEnd = CorrectDate(dateEnd); 
+		if (dateEnd < dateBegin) {
+			var tmp = dateBegin;
+			dateBegin = dateEnd;
+			dateEnd = tmp;
+		}
+
 		var ticketsTable = MakeXMLRequest('/getAllTickets/');
 		if (ticketsTable == "**ERROR**")
 			return;
+		outputDiv.innerHTML = "";
 		ticketsTable = JSON.parse(ticketsTable);
 		for (i = 0; i < ticketsTable.length; i++) {
 			var ticketsSold = 0, ticketsReturned = 0;
@@ -323,6 +417,10 @@ window.onload = function() {
 			if (theater == "**ERROR**")
 				return;
 			theater = JSON.parse(theater);
+			var showProgramm = MakeXMLRequest('/getShowProgrammByTicketId/' + ticketsTable[i][0]);
+			if (showProgramm == "**ERROR**")
+				return;
+			showProgramm = JSON.parse(showProgramm);
 
 			var purchaseTable = MakeXMLRequest('/getPurchaseByTicketId/' + ticketsTable[i][0]);
 			if (purchaseTable == "**ERROR**")
@@ -337,9 +435,14 @@ window.onload = function() {
 				}
 			}
 
+			// если покупка билета не вошла в рассматриваемый интервал, а возврат вошел
+			if ((ticketsSold - ticketsReturned) < 0) {
+				ticketSold = ticketsReturned;
+			}
+
 			outputDiv.innerHTML += "<p>Постановка: \"" + show[0][1] + "\", театр: \"" + theater[0][1] + 
-									"\", тип билета:\"" + ticketsTable[i][5] + 
-									"\" Коэффициент \"успешности\": " + (ticketsSold - ticketsReturned) / ticketsTable[i][2] + "</p>";
+									"\", тип билета:\"" + ticketsTable[i][4] + "\", дата: " + returnDateInReadableStr(showProgramm[0][3]) +
+									", Коэф: " + (ticketsSold - ticketsReturned) / ticketsTable[i][2] + "</p>";
 		}
 	}
 
